@@ -52,9 +52,11 @@ Controller, Service, Repository. El primero recibe las requests, el segundo las 
 
 **10.** En `alumnos-service.js`, la edad del alumno se calcula en el service con una función JavaScript, en vez de calcularla en la query SQL. ¿Por qué se eligió calcularla en el service y no en la base de datos?
 
-
+Porque en eso consiste la arquitectura por capas. El service es quien procesa los datos. Mezclar la lógica con las queries sería un error y complicaría futuros cambios.
 
 **11.** Cuando se crea un alumno con un `id_curso` que no existe, `AlumnosService` llama a `CursosService` para verificarlo. ¿Por qué llama al service de cursos y no directamente al repository de cursos?
+
+
 
 **12.** ¿Para qué sirve el archivo `.env` y la librería `dotenv`? ¿Qué problema de las versiones anteriores resuelve? ¿Por qué el archivo `.env` no se sube al repositorio de Git?
 
