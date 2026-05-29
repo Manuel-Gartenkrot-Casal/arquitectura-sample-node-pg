@@ -8,11 +8,19 @@ Las siguientes preguntas evalúan la comprensión del recorrido completo del pro
 
 **1.** En `server-noob.js`, cada endpoint crea un `new Client(config)`, hace `await client.connect()`, ejecuta la query, y en el `finally` hace `await client.end()`. Explicá con tus palabras qué problema de performance tiene este enfoque cuando la API recibe muchos requests simultáneos.
 
+Lo que sucede es que crea como una instancia entera diferente para cada persona, lo que reduce el rendimiento enormemente.
+
 **2.** ¿Qué pasa si PostgreSQL está apagado y un request llega a `server-noob.js`? El `client.connect()` falla, y después se ejecuta el `finally` con `await client.end()`. ¿Qué error puede ocurrir y por qué?
+
+Ocurre un error interno.
 
 **3.** En `server-noob.js`, si un compañero te dice "el endpoint de crear alumno tiene un bug", tenés que buscarlo en un archivo de ~215 líneas. ¿Por qué esto se vuelve un problema más grave a medida que la aplicación crece? Mencioná también qué pasa con Git cuando dos personas trabajan en el mismo archivo.
 
+Porque en lugar de buscarlo en solo 215 lineas, que es algo manejable, debería buscar entre más información, ralentizando todo el proceso.
+
 **4.** Las queries en `server-noob.js` usan parámetros posicionales (`$1`, `$2`, etc.) en vez de concatenar strings. ¿Qué vulnerabilidad se previene con esto y por qué es importante?
+
+Llama a los values / parámentros de un array en orden.
 
 ---
 
@@ -20,11 +28,19 @@ Las siguientes preguntas evalúan la comprensión del recorrido completo del pro
 
 **5.** En la versión mejorada se reemplazó `Client` por `Pool`. Explicá la diferencia entre ambos: ¿cómo maneja las conexiones cada uno? ¿Cuándo conviene usar `Client` y cuándo `Pool`?
 
+Pool "recicla" conexiónes sql, mientras que client las abre y cierra.
+
 **6.** ¿Qué es un `Router` de Express y qué problema resuelve en esta versión? ¿Por qué las rutas dentro del router no incluyen `/api/alumnos` y solo definen `''` o `'/:id'`?
+
+Sirve para separar los endpoints en diferentes archivos y que se conecten.
 
 **7.** En `server-noob-mejorada.js`, el archivo principal tiene solo ~26 líneas. ¿Qué responsabilidad tiene ese archivo ahora? ¿Dónde está la lógica de los endpoints?
 
+Instala todas las dependencias, maneja los routers y sus endpoints, mete los middlewares y levanta el servidor.
+
 **8.** En la versión mejorada desaparece el bloque `finally`. ¿Por qué ya no es necesario cerrar la conexión manualmente al usar `Pool`?
+
+Porque el finally se usaba para cerrar la conexión, pero el pool las reutiliza, por ende no hay que ponerlo.
 
 ---
 
@@ -32,7 +48,11 @@ Las siguientes preguntas evalúan la comprensión del recorrido completo del pro
 
 **9.** Nombrá las tres capas de la arquitectura y explicá con tus palabras qué responsabilidad tiene cada una. ¿Cuál conoce los `req` y `res` de Express? ¿Cuál conoce el SQL? ¿Cuál tiene las reglas de negocio?
 
+Controller, Service, Repository. El primero recibe las requests, el segundo las procesa, el tercero conecta lo que necesita y devuelve la respuesta.
+
 **10.** En `alumnos-service.js`, la edad del alumno se calcula en el service con una función JavaScript, en vez de calcularla en la query SQL. ¿Por qué se eligió calcularla en el service y no en la base de datos?
+
+
 
 **11.** Cuando se crea un alumno con un `id_curso` que no existe, `AlumnosService` llama a `CursosService` para verificarlo. ¿Por qué llama al service de cursos y no directamente al repository de cursos?
 
